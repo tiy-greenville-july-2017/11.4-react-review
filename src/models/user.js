@@ -4,10 +4,10 @@ var Backbone = require('backbone');
 
 
 var User = ParseModel.extend({
-  urlRoot: 'https://tiny-parse-server.herokuapp.com/users'
+  urlRoot: 'https://dietz-server.herokuapp.com/users'
 }, {
   login: function(cridentials, callback){
-    var url = 'https://tiny-parse-server.herokuapp.com/login?' + $.param(cridentials);
+    var url = 'https://dietz-server.herokuapp.com/login?' + $.param(cridentials);
 
     parse.initialize();
 
@@ -20,7 +20,7 @@ var User = ParseModel.extend({
     parse.deinitialize();
   },
   logout: function(callback){
-    var url = 'https://tiny-parse-server.herokuapp.com/logout';
+    var url = 'https://dietz-server.herokuapp.com/logout';
 
     parse.initialize();
 

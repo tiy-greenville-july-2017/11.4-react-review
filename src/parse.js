@@ -10,18 +10,23 @@ var parse = {
   serverURL: '',
   initialize: function(config){
     config = config || {};
+    let currentUser = User.current()
+    let defaults = {
+      sessionId: currentUser ? User.current().get('sessionToken') : null
+    };
+    let settings = $.extend({}, defaults, config);
 
-    if(config.serverURL){
-      this.serverURL = config.serverURL;
+    if(settings.serverURL){
+      this.serverURL = settings.serverURL;
     }
 
     $.ajaxSetup({
       beforeSend: function(xhr){
-        xhr.setRequestHeader("X-Parse-Application-Id", "tiygvl");
-        xhr.setRequestHeader("X-Parse-REST-API-Key", "slumber");
+        xhr.setRequestHeader("X-Parse-Application-Id", "dietz");
+        xhr.setRequestHeader("X-Parse-REST-API-Key", "kepler");
 
-        if(config.sessionId){
-          xhr.setRequestHeader("X-Parse-Session-Token", config.sessionId);
+        if(settings.sessionId){
+          xhr.setRequestHeader("X-Parse-Session-Token", settings.sessionId);
         }
       }
     });
@@ -40,16 +45,8 @@ var parse = {
 var ParseModel = Backbone.Model.extend({
   idAttribute: 'objectId',
   sync: function(){
-    var user = User.current();
-
-    if(user){
-      parse.initialize({sessionId: user.get('sessionToken')});
-    }else{
-      parse.initialize();
-    }
-
+    parse.initialize();
     var xhr = Backbone.Model.prototype.sync.apply(this, arguments);
-
     parse.deinitialize();
 
     return xhr;
@@ -87,16 +84,16 @@ var ParseCollection = Backbone.Collection.extend({
       };
     }
 
-    // // Check if the field has a search option set
-    // if(field.indexOf('$') !== -1){
-    //   var search = field.split('$');
-    //   field = search[0];
-    //   var comparison = '$' + search[1];
-    //
-    //   var clause = {};
-    //   clause[comparison] = value;
-    //   value = clause;
-    // }
+    // Check if the field has a search option set
+    if(field.indexOf('$') !== -1){
+      var search = field.split('$');
+      field = search[0];
+      var comparison = '$' + search[1];
+
+      var clause = {};
+      clause[comparison] = value;
+      value = clause;
+    }
 
     this.whereClause[field] = value;
 
@@ -116,17 +113,8 @@ var ParseCollection = Backbone.Collection.extend({
     return data.results;
   },
   sync: function(){
-    var User = require('./models/user').User;
-    var user = User.current();
-
-    if(user){
-      parse.initialize({sessionId: user.get('sessionToken')});
-    }else{
-      parse.initialize();
-    }
-
+    parse.initialize();
     var xhr = Backbone.Collection.prototype.sync.apply(this, arguments);
-
     parse.deinitialize();
 
     return xhr;

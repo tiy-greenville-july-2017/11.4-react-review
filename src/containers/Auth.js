@@ -6,13 +6,6 @@ import User from '../models/user';
 
 
 class AuthContainer extends React.Component{
-  constructor(props){
-    super(props);
-
-    this.state = {
-      redirectToReferrer: false
-    };
-  }
 
   login = (userData) => {
     let creds = {
@@ -21,7 +14,6 @@ class AuthContainer extends React.Component{
     };
 
     User.login(creds, (user)=>{
-      console.log(user);
       this.props.history.push('/messages/');
     });
   }
@@ -33,7 +25,6 @@ class AuthContainer extends React.Component{
     };
 
     User.signup(creds, (user)=>{
-      console.log(user);
       this.props.history.push('/messages/');
     });
   }
